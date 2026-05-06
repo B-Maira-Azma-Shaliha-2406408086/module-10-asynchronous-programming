@@ -19,18 +19,18 @@ async fn handle_connection(
                 match incoming {
                     Some(Ok(msg)) => {
                         if let Some(text) = msg.as_text() {
+                            println!("From client {addr} \"{text}\"");
                             let _ = bcast_tx.send(format!("{addr}: {text}"));
                         }
                     }
                     _ => break,
                 }
             }
+
             msg = bcast_rx.recv() => {
                 match msg {
                     Ok(text) => {
-                        if !text.starts_with(&format!("{addr}:")) {
                             ws_stream.send(Message::text(text)).await?;
-                        }
                     }
                     _ => break,
                 }
